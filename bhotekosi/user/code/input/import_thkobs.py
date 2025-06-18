@@ -67,7 +67,7 @@ def import_thkobs(cfg, ds, ds_vars, path_data, RGI_version):
         print("No profiles for test")
         ds_vars["thkobs_test"] = xr.full_like(ds_vars["thkinit"],np.nan)
     else:
-        ds_vars["thkobs_test"] = rasterize(df_test,x,y,cfg.inputs.oggm_shop.custom_thkobs_colum(ds_vars), cfg.inputs.oggm_shop.custom_thkobs_column_name)
+        ds_vars["thkobs_test"] = rasterize(df_test,x,y,cfg.inputs.oggm_shop.custom_thkobs_column_name)
     
     # Exclude thkobs_test cells from thkobs
     MASK = ds_vars["thkobs_test"].isnull() & ~ds_vars["thkobs"].isnull()
