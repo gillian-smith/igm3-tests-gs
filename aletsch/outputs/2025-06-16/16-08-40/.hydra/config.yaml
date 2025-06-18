@@ -1,0 +1,219 @@
+cwd: ${get_cwd:0}
+core:
+  url_data: ''
+  folder_data: data
+  logging_file: ''
+  logging: false
+  logging_level: 30
+  hardware:
+    gpu_info: true
+    visible_gpus: []
+    strategy: none
+  print_params: false
+  print_comp: false
+  print_info: true
+  print_imported_modules: true
+  check_compat_params: true
+  structure:
+    root_foldername: user
+    conf_foldername: conf
+    code_foldername: code
+    input_modules_foldername: inputs
+    process_modules_foldername: processes
+    output_modules_foldername: outputs
+processes:
+  data_assimilation:
+    control_list:
+    - thk
+    cost_list:
+    - velsurf
+    - icemask
+    optimization:
+      nbitmin: 50
+      nbitmax: 1000
+      step_size: 1.0
+      step_size_decay: 1.0
+      init_zero_thk: false
+      sole_mask: false
+      retrain_iceflow_model: true
+      fix_opti_normalization_issue: true
+      method: ADAM
+      obstacle_constraint:
+      - reproject
+      optimizer_clipnorm: 10000000.0
+      optimizer_epsilon: 1.0e-07
+      pertubate: true
+    regularization:
+      thk: 1000.0
+      slidingco: 1.0
+      arrhenius: 10.0
+      divflux: 1.0
+      smooth_anisotropy_factor: 1.0
+      smooth_anisotropy_factor_sl: 1.0
+      convexity_weight: 0.0
+      convexity_power: 1.3
+      to_regularize: thk
+    fitting:
+      usurfobs_std: 2.0
+      velsurfobs_std: 1.0
+      thkobs_std: 3.0
+      divfluxobs_std: 1.0
+      uniformize_thkobs: true
+      include_low_speed_term: false
+      velsurfobs_thr: 0.0
+      log_slidingco: false
+    divflux:
+      method: upwind
+      force_zero_sum: false
+    scaling:
+      thk: 1
+      usurf: 0.5
+      slidingco: 0.0001
+      arrhenius: 0.1
+    output:
+      freq: 50
+      plot2d_live: false
+      plot2d: true
+      save_result_in_ncdf: geology-optimized.nc
+      save_iterat_in_ncdf: true
+      editor_plot2d: vs
+      vars_to_save:
+      - usurf
+      - thk
+      - slidingco
+      - velbase_mag
+      - velsurf_mag
+      - velsurfobs_mag
+      - divflux
+      - icemask
+      - arrhenius
+    cook:
+      infer_params: false
+      tidewater_glacier: false
+      vol_std: 1000.0
+  iceflow:
+    method: emulated
+    force_max_velbar: 0.0
+    physics:
+      gravity_cst: 9.81
+      ice_density: 910.0
+      init_slidingco: 0.045
+      init_arrhenius: 36
+      enhancement_factor: 1.0
+      exp_glen: 3.0
+      exp_weertman: 3.0
+      regu_glen: 1.0e-05
+      regu_weertman: 1.0e-10
+      new_friction_param: true
+      dim_arrhenius: 2
+      regu: 0.0
+      thr_ice_thk: 0.1
+      min_sr: 1.0e-20
+      max_sr: 1.0e+20
+      force_negative_gravitational_energy: false
+      cf_eswn: []
+      cf_cond: false
+    numerics:
+      Nz: 2
+      vert_spacing: 4.0
+    solver:
+      step_size: 1.0
+      nbitmax: 100
+      stop_if_no_decrease: true
+      optimizer: Adam
+      lbfgs: false
+      save_cost: ''
+      plot_sol: false
+    emulator:
+      fieldin:
+      - thk
+      - usurf
+      - arrhenius
+      - slidingco
+      - dX
+      retrain_freq: 100
+      lr: 0.001
+      lr_init: 0.001
+      lr_decay: 1.0
+      warm_up_it: 0
+      nbit_init: 1000
+      nbit: 500
+      framesizemax: 750
+      split_patch_method: sequential
+      pretrained: false
+      name: ''
+      save_model: false
+      exclude_borders: 0
+      optimizer: Adam
+      optimizer_clipnorm: 1.0
+      optimizer_epsilon: 1.0e-07
+      save_cost: ''
+      output_directory: ''
+      plot_sol: false
+      pertubate: false
+      network:
+        architecture: cnn
+        multiple_window_size: 0
+        activation: LeakyReLU
+        nb_layers: 6
+        nb_blocks: 4
+        nb_out_filter: 16
+        conv_ker_size: 3
+        dropout_rate: 0
+        weight_initialization: glorot_uniform
+        cnn3d_for_vertical: false
+inputs:
+  oggm_shop:
+    RGI_ID: RGI60-11.01450
+    RGI_IDs:
+    - RGI60-11.01450
+    preprocess: true
+    dx: 100
+    border: 30
+    thk_source: consensus_ice_thickness
+    vel_source: millan_ice_velocity
+    incl_glathida: false
+    path_glathida: ''
+    filename: input.nc
+    remove_RGI_folder: true
+    sub_entity_mask: false
+    smooth_obs_vel: true
+    highres: false
+  local:
+    type: netcdf
+    filename: input.nc
+    coarsening:
+      boundary: trim
+      ratio: 1
+    crop:
+      xmin: null
+      xmax: null
+      ymin: null
+      ymax: null
+    icemask:
+      include: false
+      shapefile: icemask.shp
+      invert: false
+outputs:
+  local:
+    file_format_list:
+    - netcdf
+    output_file: output.nc
+    vars_to_save:
+    - topg
+    - usurf
+    - thk
+    - smb
+    - velbar_mag
+    - velsurf_mag
+    - uvelsurf
+    - vvelsurf
+    - wvelsurf
+    write_ts: true
+    output_ts_file: output_ts.nc
+  plot2d:
+    editor: vs
+    live: false
+    particles: true
+    var: velbar_mag
+    var_max: 1000

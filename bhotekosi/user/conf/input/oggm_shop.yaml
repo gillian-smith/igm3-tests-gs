@@ -1,0 +1,8 @@
+oggm_shop:
+  path_custom_thkobs: "/exports/geos.ed.ac.uk/iceocean/gsmith/igm_folder/DATA/thkobs/Nepal2019_new_GS.zip"
+  custom_thkobs_find_method: "RGIId"
+  custom_thkobs_column_name: "thick_m"
+
+# best to specify these rather than using defaults!
+  custom_thkobs_profiles_constrain: []
+  custom_thkobs_profiles_test: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W"]
