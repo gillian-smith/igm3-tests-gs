@@ -10,8 +10,8 @@ from igm.inputs.oggm_shop.oggm_util import oggm_util
 # from .make_input_file_old import make_input_file
 from igm.inputs.oggm_shop.open_gridded_data import open_gridded_data
 from igm.inputs.oggm_shop.arrange_data import arrange_data
-from make_input_file import make_input_file # we import our own make_input_file with a minor change to the original
-from import_thkobs import import_thkobs
+from .make_input_file import make_input_file # we import our own make_input_file with a minor change to the original
+from .import_thkobs import import_thkobs
 
 def run(cfg, state):
 
