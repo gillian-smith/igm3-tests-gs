@@ -1,0 +1,21 @@
+# @package _global_
+
+core:
+  hardware:
+    visible_gpus: []
+
+defaults:
+  - /user/conf/inputs@inputs.oggm_shop: oggm_shop
+  - override /inputs: 
+    - oggm_shop
+    - local
+
+inputs:
+  oggm_shop:
+    RGI_ID: "RGI60-15.03422"
+    thk_source: millan_ice_thickness
+    remove_RGI_folder: False
+    smooth_obs_vel: False
+    custom_thkobs_profiles_constrain: ["A","B","C","D","E"]
+    custom_thkobs_profiles_test: ["F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W"]
+    path_custom_thkobs: "/home/s1639117/Documents/igm_folder/DATA/Nepal_survey_thickness_final/Nepal2019_new_GS.zip"

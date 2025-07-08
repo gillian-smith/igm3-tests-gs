@@ -14,27 +14,29 @@ defaults:
     - iceflow
   - override /outputs: 
     - local
-#   - plot2d
 
 inputs:
   oggm_shop:
     RGI_ID: "RGI60-15.03422"
-    custom_thkobs_profiles_constrain: []
-    custom_thkobs_profiles_test: ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W"]
-    path_custom_thkobs: "/home/Documents/igm_folder/DATA/Nepal_survey_thickness_final/Nepal2019_new_GS.zip"
+    thk_source: millan_ice_thickness
+    remove_RGI_folder: False
+    smooth_obs_vel: True
+    custom_thkobs_profiles_constrain: ["A","B","C","D","E","F","G","H","I","J","K"]
+    custom_thkobs_profiles_test: ["L","M","N","O","P","Q","R","S","T","U","V","W"]
+    path_custom_thkobs: "/home/s1639117/Documents/igm_folder/DATA/Nepal_survey_thickness_final/Nepal2019_new_GS.zip"
 
 processes:
   iceflow:
     numerics:
-      Nz: 2
+      Nz: 10
     physics:
       init_slidingco: 0.045
-      init_arrhenius: 36
+      init_arrhenius: 78
     emulator: 
       pretrained: false
       retrain_freq: 100
       warm_up_it: 0
-      nbit_init: 100
+      nbit_init: 2000
       lr_init: 0.001
       lr: 0.001
       lr_decay: 1.0
@@ -50,7 +52,7 @@ processes:
       - velsurf
       - icemask
     optimization:
-      nbitmax: 100    
+      nbitmax: 1000    
       step_size: 1.0
       retrain_iceflow_model: true
       fix_opti_normalization_issue: true
@@ -60,9 +62,10 @@ processes:
       pertubate: True
     fitting:
       velsurfobs_std: 1.0
+      uniformize_thkobs: false
     regularization:
-      thk: 1.e+3
-      smooth_anisotropy_factor: 1.0
+      thk: 6.0
+      smooth_anisotropy_factor: 0.1
       convexity_weight: 0.0
       to_regularize: thk
     scaling:
