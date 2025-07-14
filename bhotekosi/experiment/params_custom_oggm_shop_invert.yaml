@@ -1,0 +1,74 @@
+# @package _global_
+
+core:
+  hardware:
+    visible_gpus: []
+
+defaults:
+  - /user/conf/inputs@inputs.oggm_shop: oggm_shop
+  - override /inputs: 
+    - oggm_shop
+    - local
+  - override /processes:
+    - data_assimilation 
+    - iceflow
+  - override /outputs: 
+    - local
+
+inputs:
+  oggm_shop:
+    RGI_ID: "RGI60-15.03422"
+    thk_source: millan_ice_thickness
+    remove_RGI_folder: False
+    smooth_obs_vel: False
+    custom_thkobs_profiles_constrain: ["A","B","C","D","E","F"]
+    custom_thkobs_profiles_test: ["G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W"]
+    filename: input_ABCDEF.nc
+    path_custom_thkobs: "/home/s1639117/Documents/igm_folder/DATA/Nepal_survey_thickness_final/Nepal2019_new_GS.zip"
+
+processes:
+  data_assimilation:
+    control_list: 
+      - thk
+    cost_list:
+      - velsurf
+      - icemask
+    optimization:
+      nbitmax: 1000
+      retrain_iceflow_model: true
+      fix_opti_normalization_issue: true
+      #sole_mask: True
+      obstacle_constraint: ['penalty']
+    fitting:
+       velsurfobs_std: 1
+       #thkobs_std: 1
+    regularization:
+       thk: 6
+       smooth_anisotropy_factor: 0.1
+       convexity_weight: 0    
+       to_regularize: topg
+    output:
+      freq: 1000
+      plot2d: false
+      plot2d_live: false
+      vars_to_save:
+        - usurf
+        - thk
+        - slidingco
+        - velbase_mag
+        - velsurf_mag
+        - velsurfobs_mag
+        - uvelsurf
+        - uvelsurfobs
+        - vvelsurf
+        - vvelsurfobs
+        - divflux
+        - icemask
+        - arrhenius
+        - thkobs
+        - thkobs_test
+  iceflow:
+    physics:
+      init_slidingco: 0.045
+      init_arrhenius: 78
+   
